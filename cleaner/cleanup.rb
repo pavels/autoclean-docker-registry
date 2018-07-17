@@ -33,8 +33,7 @@ def clean_registry(registry_url, keep_tags)
 
   repositories.each do |repo, digests|
     digests.each do |digest_info|
-      target_digest = digest_info[1].split(":")[1]
-      HTTParty.delete("#{registry_url}/v2/#{repo}/manifests/#{target_digest}")    
+      HTTParty.delete("#{registry_url}/v2/#{repo}/manifests/#{digest_info[1]}")    
     end
   end
 
