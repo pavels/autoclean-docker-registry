@@ -4,8 +4,8 @@ RUN set -ex \
     && apk add --no-cache ca-certificates apache2-utils supervisor
 RUN bundle config --global frozen 1
 
-COPY ./distribution-library-image/registry/registry /bin/registry
-COPY ./distribution-library-image/registry/config-example.yml /etc/docker/registry/config.yml
+COPY ./distribution-library-image/amd64/registry /bin/registry
+COPY ./distribution-library-image/amd64/config-example.yml /etc/docker/registry/config.yml
 COPY ./run_registry.sh /run_registry.sh
 RUN chmod +x /run_registry.sh
 
