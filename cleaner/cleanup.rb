@@ -17,19 +17,23 @@ def clean_registry(registry_url, keep_tags)
         digest = JSON.parse(manifest)["config"]["digest"]
         
         resp = HTTParty.get("#{registry_url}/v2/#{repository}/blobs/#{digest}", headers: headers)  
-        [ Time.parse(JSON.parse(resp)['created']), digest ]
+        if resp.code == 200
+          [ Time.parse(JSON.parse(resp.body)['created']), digest ]
+        else
+          nil
+        end
       end
-      [repository, tags_info]
+      [repository, tags_info.reject{ |ti| ti.nil? } ]
     else
       [repository, []]
     end
   end.to_h
 
+  # puts repositories.map { |k,v| "#{k} -> " + v.map{ |ti| "#{ti[0]} - #{ti[1]}"}.join("\n")  }
+
   repositories.keys.each do |k|
     repositories[k].sort_by!{ |val| val[0] }.reverse!.shift(keep_tags)
   end
-
-  # puts repositories.map { |k,v| "#{k} -> " + v.map{ |ti| "#{ti[0]} - #{ti[1]}"}.join("\n")  }
 
   repositories.each do |repo, digests|
     digests.each do |digest_info|
